@@ -1,0 +1,12 @@
+﻿{
+  "target": "target",
+  "id_column": "sample_id",
+  "feature_groups": {
+    "solvent": ["solvent_A", "solvent_B"],
+    "salt": ["salt_S"],
+    "additive": ["additive_C"]
+  },
+  "blank_as_zero_columns": ["additive_C"],
+  "categorical_columns": [],
+  "drop_columns": []
+}
