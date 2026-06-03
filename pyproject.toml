@@ -14,5 +14,8 @@ dependencies = [
   "scikit-learn>=1.2"
 ]
 
+[project.optional-dependencies]
+ai = ["openai>=1.0"]
+
 [project.scripts]
 smallmatprep-demo = "examples.run_minimal_demo:main"

@@ -1,4 +1,4 @@
-﻿{
+{
   "target": "target",
   "id_column": "sample_id",
   "feature_groups": {
@@ -8,5 +8,20 @@
   },
   "blank_as_zero_columns": ["additive_C"],
   "categorical_columns": [],
-  "drop_columns": []
+  "drop_columns": [],
+  "impute": {
+    "method": "median",
+    "group_col": null,
+    "n_neighbors": 5,
+    "columns": {
+      "additive_C": {"method": "zero", "reason": "blank means none added"},
+      "temperature": {"method": "group_median", "group_col": "solvent_A"}
+    }
+  },
+  "model": {
+    "task": "regression",
+    "test_size": 0.2,
+    "random_state": 42,
+    "prefer_interpretable": true
+  }
 }
