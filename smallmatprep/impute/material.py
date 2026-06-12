@@ -42,9 +42,8 @@ def impute_group_median(
         if col not in out.columns:
             continue
         # Group-level median fill, then global median as safety net
-        out[col] = out.groupby(group_col)[col].transform(
-            lambda s: s.fillna(s.median())
-        )
+        group_medians = out.groupby(group_col)[col].transform("median")
+        out[col] = out[col].fillna(group_medians)
         out[col] = out[col].fillna(out[col].median())
 
     return out

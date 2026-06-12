@@ -42,16 +42,24 @@ report = smp.missing_report(df)
 # 3. 插补
 df_clean = smp.impute_median(df, feature_cols=["col1", "col2"])
 
-# 4. 模型推荐
-recs = smp.recommend_model(n_samples=45, n_features=8, task="regression")
+# 或：KNN 初始化 + ExtraTrees 迭代精修
+df_clean = smp.impute_knn_extratrees(df, feature_cols=["col1", "col2"])
 
-# 5. 建模 & 评估
+# 4. 加入 CEP 理论先验特征
+df_clean = smp.add_cep_feature(df_clean, smp.simple_electrolyte_cep)
+
+# 5. 模型推荐
+recs = smp.recommend_model(n_samples=45, n_features=8)
+
+# 6. 建模 & 评估
 from sklearn.ensemble import RandomForestRegressor
 model = RandomForestRegressor()
-scores = smp.evaluate_model(model, X_train, X_test, y_train, y_test)
+model.fit(X_train, y_train)
+pred = model.predict(X_test)
+scores = smp.evaluate_model(y_test, pred)
 
-# 6. 汇总
-print(smp.build_summary(report, recs, scores))
+# 7. 汇总
+print(smp.build_summary(report, scores, recs[0]["model"]))
 ```
 
 ### AI 模式（自然语言生成配置）
@@ -69,7 +77,8 @@ python examples/run_ai_demo.py
 |------|------|----------|
 | `data` | 数据加载 | `load_csv`, `load_config` |
 | `inspect` | 缺失值诊断 | `missing_report` |
-| `impute` | 插补策略 | `impute_median`, `impute_knn`, `impute_group_median` |
+| `impute` | 插补策略 | `impute_median`, `impute_knn`, `impute_knn_extratrees`, `impute_group_median` |
+| `features` | 物理先验特征 | `add_cep_feature`, `simple_electrolyte_cep` |
 | `modeling` | 模型推荐 | `recommend_model` |
 | `evaluate` | 模型评估 | `evaluate_model` |
 | `report` | 报告汇总 | `build_summary` |
@@ -124,6 +133,9 @@ python -m pytest tests/ -v
 
 # 运行演示
 python examples/run_minimal_demo.py
+
+# MatImpute-lite + CEP 对比演示
+python examples/run_matimpute_cep_demo.py
 ```
 
 ## 许可证

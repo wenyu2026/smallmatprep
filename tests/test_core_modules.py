@@ -164,6 +164,31 @@ class TestRecommend(unittest.TestCase):
         with self.assertRaises(ValueError):
             recommend_model(n_samples=10, n_features=-1)
 
+    def test_classification_returns_classifiers(self):
+        recs = recommend_model(n_samples=50, n_features=5, task="classification")
+        models = [r["model"] for r in recs]
+        self.assertIn("LogisticRegression", models)
+        self.assertIn("RandomForestClassifier", models)
+        self.assertIn("SVC", models)
+
+    def test_cep_reduces_rf_depth(self):
+        recs_without = recommend_model(n_samples=30, n_features=5, task="regression", cep_available=False)
+        recs_with = recommend_model(n_samples=30, n_features=5, task="regression", cep_available=True)
+        rf_without = [r for r in recs_without if r["model"] == "RandomForestRegressor"][0]
+        rf_with = [r for r in recs_with if r["model"] == "RandomForestRegressor"][0]
+        # With CEP, RF should have max_depth=3 (shallower)
+        self.assertEqual(rf_with["params"]["max_depth"], 3)
+        self.assertGreater(rf_without["params"]["max_depth"], 3)
+
+    def test_classification_small_sample_logistic(self):
+        recs = recommend_model(n_samples=5, n_features=10, task="classification")
+        models = [r["model"] for r in recs]
+        self.assertIn("LogisticRegression", models)
+
+    def test_invalid_task_raises(self):
+        with self.assertRaises(ValueError, match="Unsupported task"):
+            recommend_model(n_samples=50, n_features=5, task="clustering")
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  evaluate/metrics

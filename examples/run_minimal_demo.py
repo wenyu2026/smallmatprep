@@ -1,11 +1,17 @@
 ﻿"""Minimal demo for SmallMatPrep."""
 from pathlib import Path
+import sys
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 import smallmatprep as smp
 
-ROOT = Path(__file__).resolve().parent.parent
 EXAMPLE_DIR = ROOT / "examples"
 
 
