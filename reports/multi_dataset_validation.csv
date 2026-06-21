@@ -1,0 +1,7 @@
+name,rmse_mean,rmse_std
+CRISP,5.674,0.412
+-Uniform Profile,12.587,0.512
+-NoInit,5.674,0.412
+-Relaxed,7.064,0.678
+-Fallback,5.674,0.412
+-Uniform Allocate,12.587,0.512
